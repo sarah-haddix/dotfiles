@@ -5,6 +5,9 @@ local opt = vim.opt --use more concise syntax
 opt.relativenumber = true --shows relative line #s in buffers
 opt.number = true --shows absolute line # for current line
 
+opt.spell = true --spellchecker
+opt.spelllang = { "en_us" }
+
 
 -- tabs & indentation
 opt.tabstop = 2 --2 spaces for tabs (prettier default)
