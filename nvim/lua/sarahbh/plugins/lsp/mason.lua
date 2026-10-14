@@ -4,6 +4,7 @@ return {
   dependencies = {
     "mason-org/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig", -- must be on the runtimepath before mason-lspconfig is set up (v2 requirement)
+    "WhoIsSethDaniel/mason-tool-installer.nvim", -- makes it possible to install further non-lsp tools through mason - i use this so that I'm able to install tree-sitter-cli through mason in an os-agnostic way
   },
   config = function()
     -- import mason
@@ -26,11 +27,19 @@ return {
     mason_lspconfig.setup({
       -- list of servers for mason to install
       ensure_installed = {
-        "clangd"
+        "clangd",
+        "lua_ls",
       },
       
       -- call vim.lsp.enable() on every installed server
       automatic_enable = true,
+    })
+
+    -- install tools (not language servers) so a fresh machine needs no manual installs 
+    require("mason-tool-installer").setup({
+      ensure_installed = {
+        "tree-sitter-cli", -- needed by nvim-treesitter (main branch) to compile parsers
+      },
     })
   end,
 }

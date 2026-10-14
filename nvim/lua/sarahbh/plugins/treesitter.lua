@@ -1,60 +1,54 @@
 -- better syntax highlighting, indentation, autotagging, incremental selection
 return {
   "nvim-treesitter/nvim-treesitter",
-  event = { "BufReadPre", "BufNewFile" },
+  branch = "main", -- the rewrite; master is frozen
+  lazy = false, -- main branch does not support lazy-loading
   build = ":TSUpdate",
   dependencies = {
-    "windwp/nvim-ts-autotag",
+    "mason-org/mason.nvim", -- provides the tree-sitter CLI (see mason.lua)
+    { "windwp/nvim-ts-autotag", config = true },
   },
   config = function()
     -- import nvim-treesitter plugin
-    local treesitter = require("nvim-treesitter.configs")
+    local treesitter = require("nvim-treesitter")
 
-    -- configure treesitter
-    treesitter.setup({ -- enable syntax highlighting
-      highlight = {
-        enable = true,
-      },
-      -- enable indentation
-      indent = { enable = true },
-      -- enable autotagging (w/ nvim-ts-autotag plugin)
-      autotag = {
-        enable = true,
-      },
-      -- ensure these language parsers are installed
-      ensure_installed = {
-        "json",
-        "javascript",
-        "typescript",
-        "tsx",
-        "yaml",
-        "html",
-        "css",
-        "prisma",
-        "markdown",
-        "markdown_inline",
-        "svelte",
-        "graphql",
-        "bash",
-        "lua",
-        "vim",
-        "dockerfile",
-        "gitignore",
-        "query",
-        "vimdoc",
-        "c",
-        "c++",
-        "python",
-      },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<C-space>",
-          node_incremental = "<C-space>",
-          scope_incremental = false,
-          node_decremental = "<bs>",
-        },
-      },
+    treesitter.setup({})
+
+    -- ensure these language parsers are installed
+    treesitter.install({
+      "json",
+      "javascript",
+      "typescript",
+      "yaml",
+      "html",
+      "css",
+      "markdown",
+      "markdown_inline",
+      "svelte",
+      "graphql",
+      "bash",
+      "lua",
+      "vim",
+      "dockerfile",
+      "gitignore",
+      "query",
+      "vimdoc",
+      "c",
+      "cpp",
+      "python",
+    })
+
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("UserTreesitter", {}),
+      callback = function(ev)
+
+        -- enable syntax highlighting (silently skipped if no parser exists)
+        if not pcall(vim.treesitter.start, ev.buf) then
+          return
+        end
+        -- enable indentation
+        vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end,
     })
   end,
 }
