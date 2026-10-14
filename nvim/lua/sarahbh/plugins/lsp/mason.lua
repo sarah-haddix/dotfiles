@@ -1,8 +1,9 @@
 -- install language servers that we need to enable lsp functionality for the languages i work in 
 return {
-  "williamboman/mason.nvim",
+  "mason-org/mason.nvim",
   dependencies = {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig", -- must be on the runtimepath before mason-lspconfig is set up (v2 requirement)
   },
   config = function()
     -- import mason
@@ -27,6 +28,9 @@ return {
       ensure_installed = {
         "clangd"
       },
+      
+      -- call vim.lsp.enable() on every installed server
+      automatic_enable = true,
     })
   end,
 }
