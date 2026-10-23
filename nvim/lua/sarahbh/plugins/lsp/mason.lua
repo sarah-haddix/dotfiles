@@ -29,6 +29,7 @@ return {
       ensure_installed = {
         "clangd",
         "lua_ls",
+        "pyright",
       },
       
       -- call vim.lsp.enable() on every installed server
