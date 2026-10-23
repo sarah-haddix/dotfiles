@@ -39,6 +39,7 @@ return {
     -- install tools (not language servers) so a fresh machine needs no manual installs 
     require("mason-tool-installer").setup({
       ensure_installed = {
+        "clang-format",
         "tree-sitter-cli", -- needed by nvim-treesitter (main branch) to compile parsers
       },
     })

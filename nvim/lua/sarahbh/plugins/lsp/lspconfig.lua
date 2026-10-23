@@ -57,6 +57,20 @@ return {
 
         opts.desc = "Restart LSP"
         keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+
+        opts.desc = "Format buffer"
+        keymap.set("n", "<leader>rf", function()
+          vim.lsp.buf.format({ async = true })
+        end, opts)
+
+        if vim.bo[ev.buf].filetype == "c" or vim.bo[ev.buf].filetype == "cpp" then
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = ev.buf,
+            callback = function()
+              vim.lsp.buf.format({ async = false })
+            end,
+          })
+        end
       end,
     })
 
